@@ -63,6 +63,7 @@
             {title: '<?php echo app_lang("category") ?>'},
             {title: '<?php echo app_lang("title") ?>'},
             {title: '<?php echo app_lang("description") ?>'},
+            {title: '<?php echo app_lang("account") ?>'},
             {title: '<?php echo app_lang("files") ?>'},
             {title: '<?php echo app_lang("amount") ?>', "class": "text-right"},
             {title: '<?php echo app_lang("tax") ?>', "class": "text-right"},

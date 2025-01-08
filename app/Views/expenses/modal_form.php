@@ -54,6 +54,21 @@
                     </div>
                 </div>
             </div>
+            <div class="form-group">
+    <label for="account_code">Konto księgowe</label>
+    <select id="account_code" name="account_code" class="form-control">
+        <?php if (!empty($accounts)) : ?>
+            <?php foreach ($accounts as $account): ?>
+                <option value="<?php echo $account['account_code']; ?>">
+                    <?php echo $account['account_code'] . ' - ' . $account['account_name']; ?>
+                </option>
+            <?php endforeach; ?>
+        <?php else : ?>
+            <option value=""><?php echo "Brak kont księgowych"; ?></option>
+        <?php endif; ?>
+    </select>
+</div>
+
             <div class=" form-group">
                 <div class="row">
                     <label for="title" class=" col-md-3"><?php echo app_lang('title'); ?></label>

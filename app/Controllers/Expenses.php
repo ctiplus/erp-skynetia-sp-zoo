@@ -72,11 +72,39 @@ class Expenses extends Security_Controller {
 
     //load the add/edit expense form
     function modal_form() {
+       
         $this->validate_submitted_data(array(
             "id" => "numeric"
         ));
 
-        $client_id = $this->request->getPost('client_id');
+       // Załaduj model kont księgowych i pobierz dane
+    $account_model = new \App\Models\Account_model();
+    $view_data['accounts'] = $account_model->get_all_accounts();
+    
+
+
+      /* $view_data['accounts'] = [
+        [
+            'account_code' => '1001',
+            'account_name' => 'Kasa'
+        ],
+        [
+            'account_code' => '2001',
+            'account_name' => 'Bank'
+        ],
+        [
+            'account_code' => '3001',
+            'account_name' => 'Rozrachunki z dostawcami'
+        ],
+        [
+            'account_code' => '4001',
+            'account_name' => 'Rozrachunki z odbiorcami'
+        ]
+    ];
+    */
+       
+       
+       $client_id = $this->request->getPost('client_id');
 
         $model_info = $this->Expenses_model->get_one($this->request->getPost('id'));
         $view_data['categories_dropdown'] = $this->Expense_categories_model->get_dropdown_list(array("title"));
@@ -137,6 +165,7 @@ class Expenses extends Security_Controller {
             "description" => $this->request->getPost('description'),
             "category_id" => $this->request->getPost('category_id'),
             "amount" => unformat_currency($this->request->getPost('amount')),
+            "account_code" => $this->request->getPost('account_code'), // Dodajemy pobranie kodu konta
             "client_id" => $this->request->getPost('expense_client_id') ? $this->request->getPost('expense_client_id') : 0,
             "project_id" => $this->request->getPost('expense_project_id'),
             "user_id" => $this->request->getPost('expense_user_id'),
@@ -343,6 +372,7 @@ class Expenses extends Security_Controller {
             $data->category_title,
             $data->title,
             $description,
+            $data->account_name, // Dodajemy kod konta księgowego
             $files_link . $file_download_link,
             to_currency($data->amount),
             to_currency($tax),

@@ -18,7 +18,8 @@ class Expenses_model extends Crud_model {
         $users_table = $this->db->prefixTable('users');
         $taxes_table = $this->db->prefixTable('taxes');
         $clients_table = $this->db->prefixTable('clients');
-
+        $accounts_table = 'accounts';
+     
         $where = "";
         $id = get_array_value($options, "id");
         if ($id) {
@@ -65,21 +66,24 @@ class Expenses_model extends Crud_model {
         $custom_fields_where = get_array_value($custom_field_query_info, "where_string");
 
         $sql = "SELECT $expenses_table.*, $expense_categories_table.title as category_title, 
-                 CONCAT($users_table.first_name, ' ', $users_table.last_name) AS linked_user_name,
-                 $clients_table.company_name AS linked_client_name,
-                 $projects_table.title AS project_title,
-                 tax_table.percentage AS tax_percentage,
-                 tax_table2.percentage AS tax_percentage2
-                 $select_custom_fields
-        FROM $expenses_table
-        LEFT JOIN $expense_categories_table ON $expense_categories_table.id= $expenses_table.category_id
-        LEFT JOIN $clients_table ON $clients_table.id= $expenses_table.client_id
-        LEFT JOIN $projects_table ON $projects_table.id= $expenses_table.project_id
-        LEFT JOIN $users_table ON $users_table.id= $expenses_table.user_id
-        LEFT JOIN (SELECT $taxes_table.* FROM $taxes_table) AS tax_table ON tax_table.id = $expenses_table.tax_id
-        LEFT JOIN (SELECT $taxes_table.* FROM $taxes_table) AS tax_table2 ON tax_table2.id = $expenses_table.tax_id2
-            $join_custom_fields
-        WHERE $expenses_table.deleted=0 $where $custom_fields_where";
+        CONCAT($users_table.first_name, ' ', $users_table.last_name) AS linked_user_name,
+        $clients_table.company_name AS linked_client_name,
+        $projects_table.title AS project_title,
+        tax_table.percentage AS tax_percentage,
+        tax_table2.percentage AS tax_percentage2,
+        $accounts_table.account_name AS account_name
+        $select_custom_fields
+FROM $expenses_table
+LEFT JOIN $expense_categories_table ON $expense_categories_table.id = $expenses_table.category_id
+LEFT JOIN $clients_table ON $clients_table.id = $expenses_table.client_id
+LEFT JOIN $projects_table ON $projects_table.id = $expenses_table.project_id
+LEFT JOIN $users_table ON $users_table.id = $expenses_table.user_id
+LEFT JOIN (SELECT $taxes_table.* FROM $taxes_table) AS tax_table ON tax_table.id = $expenses_table.tax_id
+LEFT JOIN (SELECT $taxes_table.* FROM $taxes_table) AS tax_table2 ON tax_table2.id = $expenses_table.tax_id2
+LEFT JOIN $accounts_table ON $accounts_table.account_code = $expenses_table.account_code
+   $join_custom_fields
+WHERE $expenses_table.deleted = 0 $where $custom_fields_where";
+
         return $this->db->query($sql);
     }
 
